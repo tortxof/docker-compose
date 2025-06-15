@@ -3,7 +3,8 @@ networks:
 
 services:
   caddy:
-    image: caddy:2
+    build:
+      dockerfile: ./caddy.Dockerfile
     restart: unless-stopped
     cap_add:
       - NET_ADMIN
@@ -13,10 +14,8 @@ services:
       - "443:443/udp"
     networks:
       - web
+    env_file: caddy.env
     volumes:
-      - type: bind
-        source: /evil_ripple/docker-volumes/caddy/conf
-        target: /etc/caddy
       - type: bind
         source: /evil_ripple/docker-volumes/caddy/data
         target: /data
@@ -30,6 +29,7 @@ services:
     networks:
       - web
     environment:
+      WEBUI_URL: 'https://ai.local.djones.co'
       BYPASS_MODEL_ACCESS_CONTROL: 'True'
       OLLAMA_BASE_URL: 'http://192.168.10.4:11434'
     env_file: open-webui.env
