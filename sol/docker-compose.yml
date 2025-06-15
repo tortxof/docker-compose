@@ -1,0 +1,63 @@
+networks:
+  web:
+
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    networks:
+      - web
+    volumes:
+      - type: bind
+        source: /evil_ripple/docker-volumes/caddy/conf
+        target: /etc/caddy
+      - type: bind
+        source: /evil_ripple/docker-volumes/caddy/data
+        target: /data
+      - type: bind
+        source: /evil_ripple/docker-volumes/caddy/config
+        target: /config
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    restart: unless-stopped
+    networks:
+      - web
+    environment:
+      BYPASS_MODEL_ACCESS_CONTROL: 'True'
+      OLLAMA_BASE_URL: 'http://192.168.10.4:11434'
+    env_file: open-webui.env
+    volumes:
+      - type: bind
+        source: /evil_ripple/docker-volumes/open-webui
+        target: /app/backend/data
+
+  jellyfin:
+    image: ghcr.io/jellyfin/jellyfin:latest
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /evil_ripple/docker-volumes/jellyfin/cache:/cache
+      - /evil_ripple/docker-volumes/jellyfin/config:/config
+      - /evil_ripple/media/library/movies:/media/movies:ro
+      - /evil_ripple/media/library/tv:/media/tv:ro
+      - /evil_ripple/media/library/music:/media/music:ro
+
+  unifi:
+    image: jacobalberty/unifi
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /evil_ripple/docker-volumes/unifi:/unifi
+
+  matrix-portal-server:
+    build: "https://github.com/tortxof/matrix-portal-server.git#main"
+    restart: unless-stopped
+    ports:
+      - "5000:5000"

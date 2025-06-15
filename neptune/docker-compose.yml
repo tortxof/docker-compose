@@ -1,0 +1,11 @@
+services:
+  ollama:
+    image: ollama/ollama:rocm
+    container_name: ollama
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    volumes:
+      - /stable_grace/docker-volumes/ollama:/root/.ollama
+    ports:
+      - "11434:11434"

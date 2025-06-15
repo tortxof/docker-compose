@@ -1,0 +1,213 @@
+services:
+  traefik:
+    restart: always
+    image: traefik:v3.3
+    networks:
+      - web
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /efs/docker-volumes/traefik/acme.json:/acme.json
+    command: >
+      --providers.docker
+      --providers.docker.exposedByDefault=false
+      --providers.docker.network=web
+      --certificatesresolvers.default.acme.httpchallenge.entrypoint=web
+      --entrypoints.web.address=:80
+      --entrypoints.web.http.redirections.entryPoint.to=websecure
+      --entrypoints.web.http.redirections.entryPoint.scheme=https
+      --entrypoints.websecure.address=:443
+
+  traefik-forward-auth:
+    image: thomseddon/traefik-forward-auth:2
+    networks:
+      - web
+    environment:
+      - LIFETIME=15552000
+      - INSECURE_COOKIE=false
+      - WHITELIST=tortxof@gmail.com,bethaashley@gmail.com
+      - COOKIE_DOMAIN=djones.co
+      - AUTH_HOST=auth.djones.co
+    env_file: traefik-forward-auth.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
+      - "traefik.http.routers.traefik-forward-auth.entrypoints=websecure"
+      - "traefik.http.routers.traefik-forward-auth.rule=Host(`auth.djones.co`)"
+      - "traefik.http.routers.traefik-forward-auth.tls=true"
+      - "traefik.http.routers.traefik-forward-auth.tls.certresolver=default"
+      - "traefik.http.routers.traefik-forward-auth.middlewares=traefik-forward-auth"
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
+
+  navidrome:
+    restart: always
+    image: deluan/navidrome:latest
+    networks:
+      - web
+    user: "1000:1000"
+    environment:
+      ND_SCANSCHEDULE: 1h
+      ND_LOGLEVEL: info
+      ND_SESSIONTIMEOUT: 24h
+      ND_ENABLEEXTERNALSERVICES: "false"
+      ND_REVERSEPROXYWHITELIST: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+      ND_REVERSEPROXYUSERHEADER: X-Forwarded-User
+    volumes:
+      - "/efs/docker-volumes/navidrome:/data"
+      - "/efs/music:/music:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.navidrome.loadbalancer.server.port=4533"
+      - "traefik.http.routers.navidrome.entrypoints=websecure"
+      - "traefik.http.routers.navidrome.rule=Host(`music.djones.co`)"
+      - "traefik.http.routers.navidrome.tls=true"
+      - "traefik.http.routers.navidrome.tls.certresolver=default"
+      - "traefik.http.routers.navidrome.middlewares=traefik-forward-auth"
+
+  gollum:
+    restart: always
+    image: gollumwiki/gollum:6.1.0
+    networks:
+      - web
+    user: "1000:1000"
+    volumes:
+      - /efs/docker-volumes/txfwiki.git:/data.git
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.gollum.loadbalancer.server.port=4567"
+      - "traefik.http.routers.gollum.entrypoints=websecure"
+      - "traefik.http.routers.gollum.rule=Host(`wiki.djones.co`)"
+      - "traefik.http.routers.gollum.tls=true"
+      - "traefik.http.routers.gollum.tls.certresolver=default"
+      - "traefik.http.routers.gollum.middlewares=traefik-forward-auth"
+    command: --h1-title --allow-uploads dir --emoji --bare /data.git
+
+  enclosed:
+    restart: always
+    image: ghcr.io/corentinth/enclosed:latest
+    networks:
+      - web
+    volumes:
+      - /efs/docker-volumes/enclosed:/app/.data
+    environment:
+      SERVER_API_ROUTES_TIMEOUT_MS: '30000'
+      PUBLIC_DEFAULT_DELETE_NOTE_AFTER_READING: 'true'
+      PUBLIC_IS_SETTING_NO_EXPIRATION_ALLOWED: 'false'
+      SERVER_CORS_ORIGINS: 'https://enclosed.djones.co'
+    env_file: enclosed.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.enclosed.loadbalancer.server.port=8787"
+      - "traefik.http.routers.enclosed.entrypoints=websecure"
+      - "traefik.http.routers.enclosed.rule=Host(`enclosed.djones.co`)"
+      - "traefik.http.routers.enclosed.tls=true"
+      - "traefik.http.routers.enclosed.tls.certresolver=default"
+
+  rc-club-members:
+    restart: always
+    image: public.ecr.aws/m3l3l1j4/rc-club-members-2@sha256:b889552f089e19bd6e073bea35afa741b5a1eaaf411ffdb046683a961db14c54
+    networks:
+      - web
+    environment:
+      APP_DEBUG: 'false'
+      APP_TIME_ZONE: 'America/New_York'
+      APP_ORIGIN: 'https://members.bsrcc.com'
+      APP_NAME: 'Black Sheep RC Club'
+      APP_SHORT_NAME: 'BSRCC'
+      MAILGUN_DOMAIN: 'bsrcc.com'
+      MAILGUN_URL: 'https://api.mailgun.net/v3/bsrcc.com/messages'
+      NOREPLY_EMAIL: 'noreply@bsrcc.com'
+      DEFAULT_FROM_EMAIL_USER: 'daniel'
+      ALLOWED_HOSTS: '["members.bsrcc.com"]'
+      CSRF_TRUSTED_ORIGINS: '["https://members.bsrcc.com"]'
+      DATABASE_PATH: '/data/db.sqlite3'
+    env_file: rc-club-members.env
+    volumes:
+      - /efs/docker-volumes/rc-club-members:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.rc-club-members.loadbalancer.server.port=8000"
+      - "traefik.http.routers.rc-club-members.entrypoints=websecure"
+      - "traefik.http.routers.rc-club-members.rule=Host(`members.bsrcc.com`)"
+      - "traefik.http.routers.rc-club-members.tls=true"
+      - "traefik.http.routers.rc-club-members.tls.certresolver=default"
+
+  flask-password:
+    restart: always
+    image: public.ecr.aws/m3l3l1j4/flask-password@sha256:1e368171ebcb2af2019a4189a26d964111689179b9b36a2e89266ae730001369
+    networks:
+      - web
+      - postgres
+    environment:
+      FLASK_DEBUG: 'false'
+      PG_HOST: 'postgres'
+    env_file: flask-password.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.flask-password.loadbalancer.server.port=8000"
+      - "traefik.http.routers.flask-password.entrypoints=websecure"
+      - "traefik.http.routers.flask-password.rule=Host(`pw.djones.co`)"
+      - "traefik.http.routers.flask-password.tls=true"
+      - "traefik.http.routers.flask-password.tls.certresolver=default"
+
+  flask-imghost:
+    restart: always
+    image: public.ecr.aws/m3l3l1j4/flask-imghost@sha256:9887fe0798085e4e92f23093524ac4ddd34ee3011047ecd093f1abbad31de4e5
+    networks:
+      - web
+      - postgres
+    environment:
+      FLASK_DEBUG: 'false'
+      S3_BUCKET: 'djones-imghost'
+      BUCKET_CDN: '{"djones-imghost": "https://imghost-cdn.djones.co"}'
+      PG_HOST: 'postgres'
+    env_file: flask-imghost.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.flask-imghost.loadbalancer.server.port=8000"
+      - "traefik.http.routers.flask-imghost.entrypoints=websecure"
+      - "traefik.http.routers.flask-imghost.rule=Host(`imghost.djones.co`)"
+      - "traefik.http.routers.flask-imghost.tls=true"
+      - "traefik.http.routers.flask-imghost.tls.certresolver=default"
+
+  postgres:
+    restart: always
+    image: public.ecr.aws/docker/library/postgres:16
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    volumes:
+      - /efs/docker-volumes/postgres:/var/lib/postgresql/data
+    env_file: postgres.env
+
+  # rustdesk
+  hbbs:
+    restart: unless-stopped
+    container_name: hbbs
+    image: rustdesk/rustdesk-server:latest
+    network_mode: "host"
+    command: hbbs
+    volumes:
+      - /efs/docker-volumes/rustdesk:/root
+
+    depends_on:
+      - hbbr
+
+  hbbr:
+    restart: unless-stopped
+    container_name: hbbr
+    image: rustdesk/rustdesk-server:latest
+    network_mode: "host"
+    command: hbbr
+    volumes:
+      - /efs/docker-volumes/rustdesk:/root
+
+networks:
+  web:
+    name: web
+  postgres:
+    name: postgres
