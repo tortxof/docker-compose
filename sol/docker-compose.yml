@@ -41,7 +41,8 @@ services:
   jellyfin:
     image: ghcr.io/jellyfin/jellyfin:latest
     restart: unless-stopped
-    network_mode: host
+    networks:
+      - web
     volumes:
       - /evil_ripple/docker-volumes/jellyfin/cache:/cache
       - /evil_ripple/docker-volumes/jellyfin/config:/config
