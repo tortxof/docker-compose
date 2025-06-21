@@ -62,3 +62,25 @@ services:
     restart: unless-stopped
     ports:
       - "5000:5000"
+
+  # rustdesk
+  hbbs:
+    restart: unless-stopped
+    container_name: hbbs
+    image: rustdesk/rustdesk-server:latest
+    network_mode: "host"
+    command: hbbs
+    volumes:
+      - /evil_ripple/rustdesk:/root
+
+    depends_on:
+      - hbbr
+
+  hbbr:
+    restart: unless-stopped
+    container_name: hbbr
+    image: rustdesk/rustdesk-server:latest
+    network_mode: "host"
+    command: hbbr
+    volumes:
+      - /evil_ripple/rustdesk:/root
