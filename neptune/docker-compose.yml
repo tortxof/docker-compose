@@ -16,8 +16,7 @@ services:
     restart: always
     ports:
       - "3099:3000"
-    environment:
-      KW_SECRET_API_KEY: 'MMCbpoPlTgfWhE3RwGcaA7P4'
+    env_file: kokoro.env
 
   ramalama:
     image: quay.io/ramalama/ramalama:0.9
