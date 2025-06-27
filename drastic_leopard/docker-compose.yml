@@ -184,6 +184,18 @@ services:
       - /efs/docker-volumes/postgres:/var/lib/postgresql/data
     env_file: postgres.env
 
+
+  bore:
+    restart: always
+    image: ekzhang/bore
+    init: true
+    network_mode: "host"
+    environment:
+      BORE_MIN_PORT: 30000
+      BORE_MAX_PORT: 30999
+    env_file: bore.env
+    command: server
+
   # rustdesk
   hbbs:
     restart: unless-stopped
