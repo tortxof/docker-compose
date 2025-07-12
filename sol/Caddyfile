@@ -1,3 +1,7 @@
+{
+    email tortxof@gmail.com
+}
+
 ai.local.djones.co {
     reverse_proxy open-webui:8080
     tls {
@@ -10,6 +14,16 @@ ai.local.djones.co {
 
 jellyfin.local.djones.co {
     reverse_proxy jellyfin:8096
+    tls {
+        dns route53 {
+            region "us-east-1"
+            hosted_zone_id "Z3BTQ4QIZ5HJTI"
+        }
+    }
+}
+
+syncthing.local.djones.co {
+    reverse_proxy 192.168.1.1:8384
     tls {
         dns route53 {
             region "us-east-1"
