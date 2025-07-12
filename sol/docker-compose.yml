@@ -50,6 +50,22 @@ services:
       - /evil_ripple/media/library/tv:/media/tv:ro
       - /evil_ripple/media/library/music:/media/music:ro
 
+  syncthing:
+    image: syncthing/syncthing:latest
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /evil_ripple/docker-volumes/syncthing:/var/syncthing
+      - /evil_ripple/media/library/music-opus:/media/library/music-opus:ro
+    environment:
+      - PUID=1000
+      - PGID=1000
+    healthcheck:
+      test: curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
   unifi:
     image: jacobalberty/unifi
     restart: unless-stopped
