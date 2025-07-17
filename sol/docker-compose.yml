@@ -23,6 +23,21 @@ services:
         source: /evil_ripple/docker-volumes/caddy/config
         target: /config
 
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    networks:
+      - web
+    environment:
+      N8N_HOST: 'n8n.local.djones.co'
+      N8N_PORT: 5678
+      N8N_EDITOR_BASE_URL: 'https://n8n.local.djones.co'
+      N8N_PROTOCOL: http
+      NODE_ENV: production
+      GENERIC_TIMEZONE: 'America/New_York'
+    volumes:
+      - /evil_ripple/docker-volumes/n8n:/home/node/.n8n
+
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     restart: unless-stopped
