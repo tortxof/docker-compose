@@ -32,6 +32,7 @@ services:
       N8N_HOST: 'n8n.local.djones.co'
       N8N_PORT: 5678
       N8N_EDITOR_BASE_URL: 'https://n8n.local.djones.co'
+      WEBHOOK_URL: 'https://n8n.local.djones.co'
       N8N_PROTOCOL: http
       NODE_ENV: production
       GENERIC_TIMEZONE: 'America/New_York'
