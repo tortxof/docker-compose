@@ -1,5 +1,6 @@
 networks:
   web:
+  valkey:
 
 services:
   caddy:
@@ -28,6 +29,7 @@ services:
     restart: unless-stopped
     networks:
       - web
+      - valkey
     environment:
       N8N_HOST: 'n8n.local.djones.co'
       N8N_PORT: 5678
@@ -38,6 +40,15 @@ services:
       GENERIC_TIMEZONE: 'America/New_York'
     volumes:
       - /evil_ripple/docker-volumes/n8n:/home/node/.n8n
+
+  valkey:
+    image: valkey/valkey:8
+    restart: unless-stopped
+    networks:
+      - valkey
+    volumes:
+      - /evil_ripple/docker-volumes/valkey:/data
+    command: valkey-server --save 60 1 --loglevel warning
 
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
