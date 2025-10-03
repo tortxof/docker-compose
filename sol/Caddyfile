@@ -2,42 +2,31 @@
     email tortxof@djones.co
 }
 
-ai.local.djones.co {
-    reverse_proxy open-webui:8080
+(route53_tls) {
     tls {
         dns route53 {
             region "us-east-1"
             hosted_zone_id "Z3BTQ4QIZ5HJTI"
         }
     }
+}
+
+ai.local.djones.co {
+    reverse_proxy open-webui:8080
+    import route53_tls
 }
 
 jellyfin.local.djones.co {
     reverse_proxy jellyfin:8096
-    tls {
-        dns route53 {
-            region "us-east-1"
-            hosted_zone_id "Z3BTQ4QIZ5HJTI"
-        }
-    }
+    import route53_tls
 }
 
 syncthing.local.djones.co {
     reverse_proxy 192.168.1.1:8384
-    tls {
-        dns route53 {
-            region "us-east-1"
-            hosted_zone_id "Z3BTQ4QIZ5HJTI"
-        }
-    }
+    import route53_tls
 }
 
 n8n.local.djones.co {
     reverse_proxy n8n:5678
-    tls {
-        dns route53 {
-            region "us-east-1"
-            hosted_zone_id "Z3BTQ4QIZ5HJTI"
-        }
-    }
+    import route53_tls
 }
