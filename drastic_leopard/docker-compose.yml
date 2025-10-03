@@ -42,31 +42,6 @@ services:
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
 
-  navidrome:
-    restart: always
-    image: deluan/navidrome:latest
-    networks:
-      - web
-    user: "1000:1000"
-    environment:
-      ND_SCANSCHEDULE: 1h
-      ND_LOGLEVEL: info
-      ND_SESSIONTIMEOUT: 24h
-      ND_ENABLEEXTERNALSERVICES: "false"
-      ND_REVERSEPROXYWHITELIST: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
-      ND_REVERSEPROXYUSERHEADER: X-Forwarded-User
-    volumes:
-      - "/efs/docker-volumes/navidrome:/data"
-      - "/efs/music:/music:ro"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.navidrome.loadbalancer.server.port=4533"
-      - "traefik.http.routers.navidrome.entrypoints=websecure"
-      - "traefik.http.routers.navidrome.rule=Host(`music.djones.co`)"
-      - "traefik.http.routers.navidrome.tls=true"
-      - "traefik.http.routers.navidrome.tls.certresolver=default"
-      - "traefik.http.routers.navidrome.middlewares=traefik-forward-auth"
-
   gollum:
     restart: always
     image: gollumwiki/gollum:6.1.0
