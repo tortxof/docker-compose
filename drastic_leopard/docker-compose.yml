@@ -60,6 +60,23 @@ services:
       - "traefik.http.routers.gollum.middlewares=traefik-forward-auth"
     command: --h1-title --allow-uploads dir --emoji --bare /data.git
 
+  linkding:
+    image: sissbruecker/linkding:latest
+    restart: unless-stopped
+    networks:
+      - web
+    volumes:
+      - "/efs/docker-volumes/linkding:/etc/linkding/data"
+    env_file: linkding.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.linkding.loadbalancer.server.port=9090"
+      - "traefik.http.routers.linkding.entrypoints=websecure"
+      - "traefik.http.routers.linkding.rule=Host(`linkding.djones.co`)"
+      - "traefik.http.routers.linkding.tls=true"
+      - "traefik.http.routers.linkding.tls.certresolver=default"
+      - "traefik.http.routers.linkding.middlewares=traefik-forward-auth"
+
   enclosed:
     restart: always
     image: ghcr.io/corentinth/enclosed:latest
