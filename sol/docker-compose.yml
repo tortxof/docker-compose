@@ -127,3 +127,12 @@ services:
     command: hbbr
     volumes:
       - /evil_ripple/rustdesk:/root
+
+  mumble-server:
+    image: mumblevoip/mumble-server:latest
+    restart: on-failure
+    ports:
+      - "64738:64738/tcp"
+      - "64738:64738/udp"
+    volumes:
+      - /evil_ripple/docker-volumes/mumble-server:/data
