@@ -1,6 +1,6 @@
 services:
   traefik:
-    restart: always
+    restart: unless-stopped
     image: traefik:v3.3
     networks:
       - web
@@ -43,7 +43,7 @@ services:
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
 
   gollum:
-    restart: always
+    restart: unless-stopped
     image: gollumwiki/gollum:6.1.0
     networks:
       - web
@@ -78,7 +78,7 @@ services:
       - "traefik.http.routers.linkding.middlewares=traefik-forward-auth"
 
   enclosed:
-    restart: always
+    restart: unless-stopped
     image: ghcr.io/corentinth/enclosed:latest
     networks:
       - web
@@ -99,7 +99,7 @@ services:
       - "traefik.http.routers.enclosed.tls.certresolver=default"
 
   rc-club-members:
-    restart: always
+    restart: unless-stopped
     image: public.ecr.aws/m3l3l1j4/rc-club-members-2@sha256:b889552f089e19bd6e073bea35afa741b5a1eaaf411ffdb046683a961db14c54
     networks:
       - web
@@ -128,7 +128,7 @@ services:
       - "traefik.http.routers.rc-club-members.tls.certresolver=default"
 
   flask-password:
-    restart: always
+    restart: unless-stopped
     image: public.ecr.aws/m3l3l1j4/flask-password@sha256:1e368171ebcb2af2019a4189a26d964111689179b9b36a2e89266ae730001369
     networks:
       - web
@@ -146,7 +146,7 @@ services:
       - "traefik.http.routers.flask-password.tls.certresolver=default"
 
   flask-imghost:
-    restart: always
+    restart: unless-stopped
     image: public.ecr.aws/m3l3l1j4/flask-imghost@sha256:9887fe0798085e4e92f23093524ac4ddd34ee3011047ecd093f1abbad31de4e5
     networks:
       - web
@@ -166,7 +166,7 @@ services:
       - "traefik.http.routers.flask-imghost.tls.certresolver=default"
 
   postgres:
-    restart: always
+    restart: unless-stopped
     image: public.ecr.aws/docker/library/postgres:16
     ports:
       - "5432:5432"
@@ -178,7 +178,7 @@ services:
 
 
   bore:
-    restart: always
+    restart: unless-stopped
     image: ekzhang/bore
     init: true
     network_mode: "host"

@@ -33,7 +33,7 @@ docker compose build [service_name] && docker compose up -d [service_name]
 - Store secrets in `.env` files (gitignored)
 - Use named networks for service isolation (`web`, `postgres`, `valkey`)
 - Bind mount volumes to host paths (`/evil_ripple/`, `/stable_grace/`, `/efs/`)
-- Use `restart: unless-stopped` or `restart: always` for production services
+- Use `restart: unless-stopped` for production services
 - Traefik labels for routing on drastic_leopard, Caddy reverse proxy on sol
 - Use official images when available, ECR for custom apps
 - Network modes: `host` for UniFi/Syncthing/RustDesk, named networks otherwise

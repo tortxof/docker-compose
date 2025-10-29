@@ -2,7 +2,7 @@ services:
   ollama:
     image: ollama/ollama
     container_name: ollama
-    restart: always
+    restart: unless-stopped
     volumes:
       - /stable_grace/docker-volumes/ollama:/root/.ollama
     environment:
@@ -13,7 +13,7 @@ services:
   kokoro:
     image: ghcr.io/eduardolat/kokoro-web:latest
     container_name: kokoro
-    restart: always
+    restart: unless-stopped
     ports:
       - "3099:3000"
     env_file: kokoro.env
