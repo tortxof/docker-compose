@@ -1,8 +1,50 @@
 networks:
   web:
   valkey:
+  web_cloudflare:
 
 services:
+  cloudflared:
+    restart: unless-stopped
+    image: cloudflare/cloudflared:latest
+    networks:
+      - web_cloudflare
+    env_file: cloudflared.env
+    command: tunnel --no-autoupdate run
+
+  enclosed:
+    restart: unless-stopped
+    image: ghcr.io/corentinth/enclosed:latest
+    networks:
+      - web_cloudflare
+    volumes:
+      - /evil_ripple/docker-volumes/enclosed:/app/.data
+    environment:
+      SERVER_API_ROUTES_TIMEOUT_MS: '30000'
+      PUBLIC_DEFAULT_DELETE_NOTE_AFTER_READING: 'true'
+      PUBLIC_IS_SETTING_NO_EXPIRATION_ALLOWED: 'false'
+      SERVER_CORS_ORIGINS: 'https://enclosed.djones.co'
+    env_file: enclosed.env
+
+  linkding:
+    image: sissbruecker/linkding:latest
+    restart: unless-stopped
+    networks:
+      - web_cloudflare
+    volumes:
+      - "/evil_ripple/docker-volumes/linkding:/etc/linkding/data"
+    env_file: linkding.env
+
+  gollum:
+    restart: unless-stopped
+    image: gollumwiki/gollum:6.1.0
+    networks:
+      - web_cloudflare
+    user: "1000:1000"
+    volumes:
+      - /evil_ripple/docker-volumes/txfwiki.git:/data.git
+    command: --h1-title --allow-uploads dir --emoji --bare /data.git
+
   caddy:
     build:
       dockerfile: ./caddy.Dockerfile
