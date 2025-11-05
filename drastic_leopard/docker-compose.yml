@@ -20,35 +20,6 @@ services:
       --entrypoints.web.http.redirections.entryPoint.scheme=https
       --entrypoints.websecure.address=:443
 
-  rc-club-members:
-    restart: unless-stopped
-    image: public.ecr.aws/m3l3l1j4/rc-club-members-2@sha256:b889552f089e19bd6e073bea35afa741b5a1eaaf411ffdb046683a961db14c54
-    networks:
-      - web
-    environment:
-      APP_DEBUG: 'false'
-      APP_TIME_ZONE: 'America/New_York'
-      APP_ORIGIN: 'https://members.bsrcc.com'
-      APP_NAME: 'Black Sheep RC Club'
-      APP_SHORT_NAME: 'BSRCC'
-      MAILGUN_DOMAIN: 'bsrcc.com'
-      MAILGUN_URL: 'https://api.mailgun.net/v3/bsrcc.com/messages'
-      NOREPLY_EMAIL: 'noreply@bsrcc.com'
-      DEFAULT_FROM_EMAIL_USER: 'daniel'
-      ALLOWED_HOSTS: '["members.bsrcc.com"]'
-      CSRF_TRUSTED_ORIGINS: '["https://members.bsrcc.com"]'
-      DATABASE_PATH: '/data/db.sqlite3'
-    env_file: rc-club-members.env
-    volumes:
-      - /efs/docker-volumes/rc-club-members:/data
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.rc-club-members.loadbalancer.server.port=8000"
-      - "traefik.http.routers.rc-club-members.entrypoints=websecure"
-      - "traefik.http.routers.rc-club-members.rule=Host(`members.bsrcc.com`)"
-      - "traefik.http.routers.rc-club-members.tls=true"
-      - "traefik.http.routers.rc-club-members.tls.certresolver=default"
-
   flask-password:
     restart: unless-stopped
     image: public.ecr.aws/m3l3l1j4/flask-password@sha256:1e368171ebcb2af2019a4189a26d964111689179b9b36a2e89266ae730001369

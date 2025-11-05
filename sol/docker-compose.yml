@@ -45,6 +45,28 @@ services:
       - /evil_ripple/docker-volumes/txfwiki.git:/data.git
     command: --h1-title --allow-uploads dir --emoji --bare /data.git
 
+  rc-club-members:
+    restart: unless-stopped
+    image: public.ecr.aws/m3l3l1j4/rc-club-members-2@sha256:b889552f089e19bd6e073bea35afa741b5a1eaaf411ffdb046683a961db14c54
+    networks:
+      - web_cloudflare
+    environment:
+      APP_DEBUG: 'false'
+      APP_TIME_ZONE: 'America/New_York'
+      APP_ORIGIN: 'https://members.bsrcc.com'
+      APP_NAME: 'Black Sheep RC Club'
+      APP_SHORT_NAME: 'BSRCC'
+      MAILGUN_DOMAIN: 'bsrcc.com'
+      MAILGUN_URL: 'https://api.mailgun.net/v3/bsrcc.com/messages'
+      NOREPLY_EMAIL: 'noreply@bsrcc.com'
+      DEFAULT_FROM_EMAIL_USER: 'daniel'
+      ALLOWED_HOSTS: '["members.bsrcc.com"]'
+      CSRF_TRUSTED_ORIGINS: '["https://members.bsrcc.com"]'
+      DATABASE_PATH: '/data/db.sqlite3'
+    env_file: rc-club-members.env
+    volumes:
+      - /evil_ripple/docker-volumes/rc-club-members:/data
+
   caddy:
     build:
       dockerfile: ./caddy.Dockerfile
