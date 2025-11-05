@@ -4,9 +4,8 @@ This repository manages multi-host Docker Compose deployments for personal infra
 
 ## Structure
 
-- `sol/` - Node1 host services (Caddy, n8n, Open-WebUI, Jellyfin, Syncthing, UniFi, RustDesk)
+- `sol/` - Primary host services (Caddy, cloudflared, n8n, Open-WebUI, Jellyfin, Syncthing, UniFi, RustDesk)
 - `neptune/` - Neptune host services (Ollama, Kokoro)
-- `drastic_leopard/` - AWS host services (Traefik, Gollum wiki, Flask apps, PostgreSQL, Bore, RustDesk)
 
 ## Commands
 
@@ -14,7 +13,6 @@ Deploy to specific host:
 ```bash
 cd sol && docker compose up -d
 cd neptune && docker compose up -d
-cd drastic_leopard && docker compose up -d
 ```
 
 View logs:
@@ -32,17 +30,19 @@ docker compose build [service_name] && docker compose up -d [service_name]
 - Use `mise.toml` for DOCKER_HOST configuration per directory
 - Store secrets in `.env` files (gitignored)
 - Use named networks for service isolation (`web`, `postgres`, `valkey`)
-- Bind mount volumes to host paths (`/evil_ripple/`, `/stable_grace/`, `/efs/`)
+- Bind mount volumes to host paths (`/evil_ripple/`, `/stable_grace/`)
 - Use `restart: unless-stopped` for production services
-- Traefik labels for routing on drastic_leopard, Caddy reverse proxy on sol
-- Use official images when available, ECR for custom apps
+- Caddy reverse proxy and cloudflared tunnels on sol for external access
+- Use official images when available
 - Network modes: `host` for UniFi/Syncthing/RustDesk, named networks otherwise
 
 ## Sol Host Specifications
 
 - Hardware: Intel N100, 16GB RAM
 - Storage: ZFS raidz2 array (5 disks) at `/evil_ripple`
-- Caddy: Reverse proxy with Route53 DNS challenge for TLS
+- Networking:
+  - Caddy: Reverse proxy with Route53 DNS challenge for TLS
+  - cloudflared: Cloudflare Tunnel for external service access
 - Media locations:
   - Jellyfin library: `/evil_ripple/media/library/` (movies/TV/music)
   - Photos/videos: `/evil_ripple/media/assets` (375GB)
