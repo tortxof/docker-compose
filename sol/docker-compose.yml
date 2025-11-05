@@ -79,6 +79,19 @@ services:
       PG_HOST: 'postgres'
     env_file: flask-password.env
 
+  flask-imghost:
+    restart: unless-stopped
+    image: public.ecr.aws/m3l3l1j4/flask-imghost@sha256:9887fe0798085e4e92f23093524ac4ddd34ee3011047ecd093f1abbad31de4e5
+    networks:
+      - web_cloudflare
+      - postgres
+    environment:
+      FLASK_DEBUG: 'false'
+      S3_BUCKET: 'djones-imghost'
+      BUCKET_CDN: '{"djones-imghost": "https://imghost-cdn.djones.co"}'
+      PG_HOST: 'postgres'
+    env_file: flask-imghost.env
+
   caddy:
     build:
       dockerfile: ./caddy.Dockerfile
