@@ -68,6 +68,17 @@ services:
     volumes:
       - /evil_ripple/docker-volumes/rc-club-members:/data
 
+  flask-password:
+    restart: unless-stopped
+    image: public.ecr.aws/m3l3l1j4/flask-password@sha256:1e368171ebcb2af2019a4189a26d964111689179b9b36a2e89266ae730001369
+    networks:
+      - web_cloudflare
+      - postgres
+    environment:
+      FLASK_DEBUG: 'false'
+      PG_HOST: 'postgres'
+    env_file: flask-password.env
+
   caddy:
     build:
       dockerfile: ./caddy.Dockerfile

@@ -20,24 +20,6 @@ services:
       --entrypoints.web.http.redirections.entryPoint.scheme=https
       --entrypoints.websecure.address=:443
 
-  flask-password:
-    restart: unless-stopped
-    image: public.ecr.aws/m3l3l1j4/flask-password@sha256:1e368171ebcb2af2019a4189a26d964111689179b9b36a2e89266ae730001369
-    networks:
-      - web
-      - postgres
-    environment:
-      FLASK_DEBUG: 'false'
-      PG_HOST: 'postgres'
-    env_file: flask-password.env
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.services.flask-password.loadbalancer.server.port=8000"
-      - "traefik.http.routers.flask-password.entrypoints=websecure"
-      - "traefik.http.routers.flask-password.rule=Host(`pw.djones.co`)"
-      - "traefik.http.routers.flask-password.tls=true"
-      - "traefik.http.routers.flask-password.tls.certresolver=default"
-
   flask-imghost:
     restart: unless-stopped
     image: public.ecr.aws/m3l3l1j4/flask-imghost@sha256:9887fe0798085e4e92f23093524ac4ddd34ee3011047ecd093f1abbad31de4e5
