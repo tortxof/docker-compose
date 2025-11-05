@@ -46,6 +46,22 @@ services:
       - /evil_ripple/docker-volumes/txfwiki.git:/data.git
     command: --h1-title --allow-uploads dir --emoji --bare /data.git
 
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    restart: unless-stopped
+    networks:
+      - web_cloudflare
+    environment:
+      WEBUI_URL: 'https://ai.djones.co'
+      WEBUI_AUTH_TRUSTED_EMAIL_HEADER: 'Cf-Access-Authenticated-User-Email'
+      BYPASS_MODEL_ACCESS_CONTROL: 'True'
+      OLLAMA_BASE_URL: 'http://192.168.10.4:11434'
+    env_file: open-webui.env
+    volumes:
+      - type: bind
+        source: /evil_ripple/docker-volumes/open-webui
+        target: /app/backend/data
+
   rc-club-members:
     restart: unless-stopped
     image: public.ecr.aws/m3l3l1j4/rc-club-members-2@sha256:b889552f089e19bd6e073bea35afa741b5a1eaaf411ffdb046683a961db14c54
@@ -147,21 +163,6 @@ services:
     volumes:
       - /evil_ripple/docker-volumes/postgres:/var/lib/postgresql/data
     env_file: postgres.env
-
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:main
-    restart: unless-stopped
-    networks:
-      - web
-    environment:
-      WEBUI_URL: 'https://ai.local.djones.co'
-      BYPASS_MODEL_ACCESS_CONTROL: 'True'
-      OLLAMA_BASE_URL: 'http://192.168.10.4:11434'
-    env_file: open-webui.env
-    volumes:
-      - type: bind
-        source: /evil_ripple/docker-volumes/open-webui
-        target: /app/backend/data
 
   jellyfin:
     image: ghcr.io/jellyfin/jellyfin:10.11.1

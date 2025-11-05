@@ -12,7 +12,7 @@
 }
 
 ai.local.djones.co {
-    reverse_proxy open-webui:8080
+    redir https://ai.djones.co/
     import route53_tls
 }
 
