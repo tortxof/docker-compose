@@ -1,2 +1,0 @@
-[env]
-DOCKER_HOST = 'ssh://drastic_leopard'
