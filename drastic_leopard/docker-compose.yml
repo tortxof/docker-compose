@@ -58,18 +58,6 @@ services:
       - "traefik.http.routers.flask-imghost.tls=true"
       - "traefik.http.routers.flask-imghost.tls.certresolver=default"
 
-  postgres:
-    restart: unless-stopped
-    image: public.ecr.aws/docker/library/postgres:16
-    ports:
-      - "5432:5432"
-    networks:
-      - postgres
-    volumes:
-      - /efs/docker-volumes/postgres:/var/lib/postgresql/data
-    env_file: postgres.env
-
-
   bore:
     restart: unless-stopped
     image: ekzhang/bore
