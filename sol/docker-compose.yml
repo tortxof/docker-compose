@@ -256,3 +256,14 @@ services:
       - "64738:64738/udp"
     volumes:
       - /evil_ripple/docker-volumes/mumble-server:/data
+
+  ntp:
+    image: dockurr/chrony
+    restart: unless-stopped
+    environment:
+      NTP_SERVERS: "192.168.100.1"
+      ENABLE_SYSCLK: "true"
+    ports:
+      - 123:123/udp
+    cap_add:
+      - SYS_TIME
