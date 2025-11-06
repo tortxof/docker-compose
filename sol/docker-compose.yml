@@ -205,6 +205,27 @@ services:
     ports:
       - "5000:5000"
 
+  scrutiny:
+    restart: unless-stopped
+    image: ghcr.io/analogj/scrutiny:master-omnibus
+    networks:
+      - web_cloudflare
+    cap_add:
+      - SYS_RAWIO
+    environment:
+      SCRUTINY_NOTIFY_URLS: 'ntfy://ntfy.sh/ladyunfairprison'
+    volumes:
+      - /run/udev:/run/udev:ro
+      - /evil_ripple/docker-volumes/scrutiny/config:/opt/scrutiny/config
+      - /evil_ripple/docker-volumes/scrutiny/influxdb:/opt/scrutiny/influxdb
+    devices:
+      - "/dev/sda"
+      - "/dev/sdg"
+      - "/dev/sdh"
+      - "/dev/sdi"
+      - "/dev/sdj"
+      - "/dev/sdk"
+
   # rustdesk
   hbbs:
     restart: unless-stopped
