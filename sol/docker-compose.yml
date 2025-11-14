@@ -108,6 +108,12 @@ services:
       PG_HOST: 'postgres'
     env_file: flask-imghost.env
 
+  it-tools:
+    restart: unless-stopped
+    image: ghcr.io/corentinth/it-tools:latest
+    networks:
+      - web_cloudflare
+
   caddy:
     build:
       dockerfile: ./caddy.Dockerfile
