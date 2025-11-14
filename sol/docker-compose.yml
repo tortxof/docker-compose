@@ -207,9 +207,17 @@ services:
 
   matrix-portal-server:
     build: "https://github.com/tortxof/matrix-portal-server.git#main"
+    networks:
+      - web_cloudflare
     restart: unless-stopped
     ports:
       - "5000:5000"
+
+  www-time:
+    build: "https://github.com/tortxof/www-time.git#main"
+    networks:
+      - web_cloudflare
+    restart: unless-stopped
 
   scrutiny:
     restart: unless-stopped
