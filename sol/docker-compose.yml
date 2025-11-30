@@ -226,8 +226,7 @@ services:
       - web_cloudflare
     cap_add:
       - SYS_RAWIO
-    environment:
-      SCRUTINY_NOTIFY_URLS: 'ntfy://ntfy.sh/ladyunfairprison'
+    env_file: scrutiny.env
     volumes:
       - /run/udev:/run/udev:ro
       - /evil_ripple/docker-volumes/scrutiny/config:/opt/scrutiny/config
