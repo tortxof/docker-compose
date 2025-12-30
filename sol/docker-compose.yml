@@ -21,10 +21,10 @@ services:
     volumes:
       - /evil_ripple/docker-volumes/enclosed:/app/.data
     environment:
-      SERVER_API_ROUTES_TIMEOUT_MS: '30000'
-      PUBLIC_DEFAULT_DELETE_NOTE_AFTER_READING: 'true'
-      PUBLIC_IS_SETTING_NO_EXPIRATION_ALLOWED: 'false'
-      SERVER_CORS_ORIGINS: 'https://enclosed.djones.co'
+      SERVER_API_ROUTES_TIMEOUT_MS: "30000"
+      PUBLIC_DEFAULT_DELETE_NOTE_AFTER_READING: "true"
+      PUBLIC_IS_SETTING_NO_EXPIRATION_ALLOWED: "false"
+      SERVER_CORS_ORIGINS: "https://enclosed.djones.co"
     env_file: enclosed.env
 
   linkding:
@@ -52,10 +52,10 @@ services:
     networks:
       - web_cloudflare
     environment:
-      WEBUI_URL: 'https://ai.djones.co'
-      WEBUI_AUTH_TRUSTED_EMAIL_HEADER: 'Cf-Access-Authenticated-User-Email'
-      BYPASS_MODEL_ACCESS_CONTROL: 'True'
-      OLLAMA_BASE_URL: 'http://192.168.10.4:11434'
+      WEBUI_URL: "https://ai.djones.co"
+      WEBUI_AUTH_TRUSTED_EMAIL_HEADER: "Cf-Access-Authenticated-User-Email"
+      BYPASS_MODEL_ACCESS_CONTROL: "True"
+      OLLAMA_BASE_URL: "http://192.168.10.4:11434"
     env_file: open-webui.env
     volumes:
       - type: bind
@@ -68,18 +68,18 @@ services:
     networks:
       - web_cloudflare
     environment:
-      APP_DEBUG: 'false'
-      APP_TIME_ZONE: 'America/New_York'
-      APP_ORIGIN: 'https://members.bsrcc.com'
-      APP_NAME: 'Black Sheep RC Club'
-      APP_SHORT_NAME: 'BSRCC'
-      MAILGUN_DOMAIN: 'bsrcc.com'
-      MAILGUN_URL: 'https://api.mailgun.net/v3/bsrcc.com/messages'
-      NOREPLY_EMAIL: 'noreply@bsrcc.com'
-      DEFAULT_FROM_EMAIL_USER: 'daniel'
+      APP_DEBUG: "false"
+      APP_TIME_ZONE: "America/New_York"
+      APP_ORIGIN: "https://members.bsrcc.com"
+      APP_NAME: "Black Sheep RC Club"
+      APP_SHORT_NAME: "BSRCC"
+      MAILGUN_DOMAIN: "bsrcc.com"
+      MAILGUN_URL: "https://api.mailgun.net/v3/bsrcc.com/messages"
+      NOREPLY_EMAIL: "noreply@bsrcc.com"
+      DEFAULT_FROM_EMAIL_USER: "daniel"
       ALLOWED_HOSTS: '["members.bsrcc.com"]'
       CSRF_TRUSTED_ORIGINS: '["https://members.bsrcc.com"]'
-      DATABASE_PATH: '/data/db.sqlite3'
+      DATABASE_PATH: "/data/db.sqlite3"
     env_file: rc-club-members.env
     volumes:
       - /evil_ripple/docker-volumes/rc-club-members:/data
@@ -91,8 +91,8 @@ services:
       - web_cloudflare
       - postgres
     environment:
-      FLASK_DEBUG: 'false'
-      PG_HOST: 'postgres'
+      FLASK_DEBUG: "false"
+      PG_HOST: "postgres"
     env_file: flask-password.env
 
   flask-imghost:
@@ -102,10 +102,10 @@ services:
       - web_cloudflare
       - postgres
     environment:
-      FLASK_DEBUG: 'false'
-      S3_BUCKET: 'djones-imghost'
+      FLASK_DEBUG: "false"
+      S3_BUCKET: "djones-imghost"
       BUCKET_CDN: '{"djones-imghost": "https://imghost-cdn.djones.co"}'
-      PG_HOST: 'postgres'
+      PG_HOST: "postgres"
     env_file: flask-imghost.env
 
   it-tools:
@@ -142,13 +142,13 @@ services:
       - web
       - valkey
     environment:
-      N8N_HOST: 'n8n.local.djones.co'
+      N8N_HOST: "n8n.local.djones.co"
       N8N_PORT: 5678
-      N8N_EDITOR_BASE_URL: 'https://n8n.local.djones.co'
-      WEBHOOK_URL: 'https://n8n.local.djones.co'
+      N8N_EDITOR_BASE_URL: "https://n8n.local.djones.co"
+      WEBHOOK_URL: "https://n8n.local.djones.co"
       N8N_PROTOCOL: http
       NODE_ENV: production
-      GENERIC_TIMEZONE: 'America/New_York'
+      GENERIC_TIMEZONE: "America/New_York"
     volumes:
       - /evil_ripple/docker-volumes/n8n:/home/node/.n8n
 
