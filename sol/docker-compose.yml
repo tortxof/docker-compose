@@ -181,6 +181,7 @@ services:
       - /evil_ripple/media/library/movies:/media/movies:ro
       - /evil_ripple/media/library/tv:/media/tv:ro
       - /evil_ripple/media/library/music:/media/music:ro
+      - /evil_ripple/media/library/youtube:/media/youtube:ro
 
   syncthing:
     image: syncthing/syncthing:latest
