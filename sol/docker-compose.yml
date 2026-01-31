@@ -173,6 +173,8 @@ services:
   jellyfin:
     image: ghcr.io/jellyfin/jellyfin:10.11.5
     restart: unless-stopped
+    ports:
+      - "8096:8096"
     networks:
       - web
     volumes:
