@@ -6,7 +6,7 @@ services:
     volumes:
       - /stable_grace/docker-volumes/ollama:/root/.ollama
     environment:
-      OLLAMA_NUM_PARALLEL: '1'
+      OLLAMA_NUM_PARALLEL: "1"
     ports:
       - "11434:11434"
 
@@ -17,3 +17,41 @@ services:
     ports:
       - "3099:3000"
     env_file: kokoro.env
+
+  monerod:
+    image: monero:latest
+    pull_policy: never
+    container_name: monerod
+    restart: unless-stopped
+    user: "1000:1000"
+    network_mode: host
+    volumes:
+      - /home/tortxof/.bitmonero:/home/monero/.bitmonero
+    command:
+      - "--data-dir=/home/monero/.bitmonero"
+      - "--non-interactive"
+      - "--zmq-pub=tcp://127.0.0.1:18083"
+      - "--out-peers=12"
+      - "--in-peers=16"
+      - "--add-priority-node=p2pmd.xmrvsbeast.com:18080"
+      - "--add-priority-node=nodes.hashvault.pro:18080"
+      - "--enable-dns-blocklist"
+      - "--enforce-dns-checkpointing"
+
+  p2pool:
+    image: p2pool:latest
+    pull_policy: never
+    container_name: p2pool
+    restart: unless-stopped
+    depends_on:
+      - monerod
+    network_mode: host
+    privileged: true
+    volumes:
+      - /dev/hugepages:/dev/hugepages:rw
+    command:
+      - "--host"
+      - "127.0.0.1"
+      - "--wallet"
+      - "48jVAh52AQ651TgHo9pQNHHMtmuHfbY3M9tp2t2NreSvDE3nTccYkJTigHPLeWxUCX8RhGjK3vQRe9PUSwbUVVod35S4ht6"
+      - "--mini"
