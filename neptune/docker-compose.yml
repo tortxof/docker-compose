@@ -23,6 +23,8 @@ services:
     pull_policy: never
     container_name: monerod
     restart: unless-stopped
+    stop_signal: SIGINT
+    stop_grace_period: 30s
     user: "1000:1000"
     network_mode: host
     volumes:
@@ -43,6 +45,7 @@ services:
     pull_policy: never
     container_name: p2pool
     restart: unless-stopped
+    stop_signal: SIGINT
     depends_on:
       - monerod
     network_mode: host
