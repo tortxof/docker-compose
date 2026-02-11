@@ -1,0 +1,2 @@
+[env]
+DOCKER_HOST = "ssh://ionos"

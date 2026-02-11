@@ -1,0 +1,6 @@
+services:
+  croc-relay:
+    image: docker.io/schollz/croc:latest
+    restart: unless-stopped
+    network_mode: "host"
+    env_file: croc-relay.env
