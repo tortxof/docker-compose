@@ -2,5 +2,39 @@ services:
   croc-relay:
     image: docker.io/schollz/croc:latest
     restart: unless-stopped
-    network_mode: "host"
+    network_mode: host
     env_file: croc-relay.env
+
+  tailscale:
+    image: tailscale/tailscale:latest
+    restart: unless-stopped
+    hostname: ionos-docker
+    env_file: tailscale.env
+    network_mode: host
+    environment:
+      TS_AUTH_ONCE: "true"
+      TS_STATE_DIR: "/var/lib/tailscale"
+      TS_USERSPACE: "false"
+      TS_EXTRA_ARGS: "--advertise-exit-node"
+    volumes:
+      - tailscale:/var/lib/tailscale
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - net_raw
+
+  monerod-proxy:
+    image: alpine/socat
+    restart: unless-stopped
+    network_mode: host
+    command: "TCP-LISTEN:18080,fork,reuseaddr,keepalive TCP:100.94.139.8:18080"
+
+  p2pool-proxy:
+    image: alpine/socat
+    restart: unless-stopped
+    network_mode: host
+    command: "TCP-LISTEN:37888,fork,reuseaddr,keepalive TCP:100.71.29.19:37888"
+
+volumes:
+  tailscale:
