@@ -22,7 +22,7 @@ services:
     container_name: monerod
     restart: unless-stopped
     stop_signal: SIGINT
-    stop_grace_period: 30s
+    stop_grace_period: 60s
     user: "1000:1000"
     network_mode: service:ts-monerod
     volumes:
