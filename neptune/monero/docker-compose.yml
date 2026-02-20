@@ -1,0 +1,86 @@
+services:
+  ts-monerod:
+    image: tailscale/tailscale:latest
+    restart: unless-stopped
+    hostname: ts-monerod
+    env_file: tailscale.env
+    environment:
+      TS_AUTH_ONCE: "true"
+      TS_STATE_DIR: "/var/lib/tailscale"
+      TS_USERSPACE: "false"
+      TS_EXTRA_ARGS: "--exit-node=100.92.9.9"
+    volumes:
+      - ts-monerod:/var/lib/tailscale
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+
+  monerod:
+    image: monero:latest
+    pull_policy: never
+    container_name: monerod
+    restart: unless-stopped
+    stop_signal: SIGINT
+    stop_grace_period: 30s
+    user: "1000:1000"
+    network_mode: service:ts-monerod
+    volumes:
+      - /home/tortxof/.bitmonero:/home/monero/.bitmonero
+    command:
+      - "--data-dir=/home/monero/.bitmonero"
+      - "--non-interactive"
+      - "--public-node"
+      - "--p2p-bind-ip=0.0.0.0"
+      - "--p2p-bind-port=18084"
+      - "--rpc-bind-ip=0.0.0.0"
+      - "--confirm-external-bind"
+      - "--rpc-restricted-bind-ip=0.0.0.0"
+      - "--rpc-restricted-bind-port=18089"
+      - "--zmq-pub=tcp://0.0.0.0:18083"
+      - "--out-peers=8"
+      - "--in-peers=16"
+      - "--add-priority-node=p2pmd.xmrvsbeast.com:18080"
+      - "--add-priority-node=nodes.hashvault.pro:18080"
+      - "--enable-dns-blocklist"
+      - "--enforce-dns-checkpointing"
+
+  ts-p2pool:
+    image: tailscale/tailscale:latest
+    restart: unless-stopped
+    hostname: ts-p2pool
+    env_file: tailscale.env
+    environment:
+      TS_AUTH_ONCE: "true"
+      TS_STATE_DIR: "/var/lib/tailscale"
+      TS_USERSPACE: "false"
+      TS_EXTRA_ARGS: "--exit-node=100.92.9.9"
+    volumes:
+      - ts-p2pool:/var/lib/tailscale
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+
+  p2pool:
+    image: p2pool:latest
+    pull_policy: never
+    container_name: p2pool
+    restart: unless-stopped
+    stop_signal: SIGINT
+    depends_on:
+      - monerod
+    network_mode: service:ts-p2pool
+    privileged: true
+    volumes:
+      - /dev/hugepages:/dev/hugepages:rw
+    command:
+      - "--host"
+      - "100.80.119.122"
+      - "--wallet"
+      - "48jVAh52AQ651TgHo9pQNHHMtmuHfbY3M9tp2t2NreSvDE3nTccYkJTigHPLeWxUCX8RhGjK3vQRe9PUSwbUVVod35S4ht6"
+      - "--mini"
+
+volumes:
+  ts-monerod:
+  ts-p2pool:

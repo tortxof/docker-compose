@@ -28,13 +28,19 @@ services:
     image: alpine/socat
     restart: unless-stopped
     network_mode: host
-    command: "TCP-LISTEN:18080,fork,reuseaddr,keepalive TCP:100.94.139.8:18080"
+    command: "TCP4-LISTEN:18084,fork,reuseaddr,keepalive TCP:100.80.119.122:18084"
+
+  monerod-rpc-proxy:
+    image: alpine/socat
+    restart: unless-stopped
+    network_mode: host
+    command: "TCP4-LISTEN:18089,fork,reuseaddr,keepalive TCP:100.80.119.122:18089"
 
   p2pool-proxy:
     image: alpine/socat
     restart: unless-stopped
     network_mode: host
-    command: "TCP-LISTEN:37888,fork,reuseaddr,keepalive TCP:100.71.29.19:37888"
+    command: "TCP4-LISTEN:37888,fork,reuseaddr,keepalive TCP:100.114.219.71:37888"
 
 volumes:
   tailscale:
