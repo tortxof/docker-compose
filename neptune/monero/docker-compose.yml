@@ -8,7 +8,7 @@ services:
       TS_AUTH_ONCE: "true"
       TS_STATE_DIR: "/var/lib/tailscale"
       TS_USERSPACE: "false"
-      TS_EXTRA_ARGS: "--exit-node=100.92.9.9"
+      TS_EXTRA_ARGS: "--exit-node=100.77.21.77"
     volumes:
       - ts-monerod:/var/lib/tailscale
     devices:
@@ -54,7 +54,7 @@ services:
       TS_AUTH_ONCE: "true"
       TS_STATE_DIR: "/var/lib/tailscale"
       TS_USERSPACE: "false"
-      TS_EXTRA_ARGS: "--exit-node=100.92.9.9"
+      TS_EXTRA_ARGS: "--exit-node=100.77.21.77"
     volumes:
       - ts-p2pool:/var/lib/tailscale
     devices:
