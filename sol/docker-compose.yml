@@ -183,6 +183,7 @@ services:
       - /evil_ripple/media/library/movies:/media/movies:ro
       - /evil_ripple/media/library/tv:/media/tv:ro
       - /evil_ripple/media/library/music:/media/music:ro
+      - /evil_ripple/media/library/music-videos:/media/music-videos:ro
       - /evil_ripple/media/library/youtube:/media/youtube:ro
       - /evil_ripple/media/library/yogi-flight-school:/media/yogi-flight-school:ro
 
