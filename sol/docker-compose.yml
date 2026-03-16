@@ -244,11 +244,11 @@ services:
       - /evil_ripple/docker-volumes/scrutiny/influxdb:/opt/scrutiny/influxdb
     devices:
       - "/dev/sda"
-      - "/dev/sdb"
-      - "/dev/sdc"
-      - "/dev/sdd"
-      - "/dev/sde"
-      - "/dev/sdf"
+      - "/dev/sdg"
+      - "/dev/sdh"
+      - "/dev/sdi"
+      - "/dev/sdj"
+      - "/dev/sdk"
 
   # rustdesk
   hbbs:
