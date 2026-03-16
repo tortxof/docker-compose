@@ -1,119 +1,10 @@
 networks:
   web:
-  web_cloudflare:
   valkey:
   postgres:
+    name: postgres
 
 services:
-  cloudflared:
-    restart: unless-stopped
-    image: cloudflare/cloudflared:latest
-    networks:
-      - web_cloudflare
-    env_file: cloudflared.env
-    command: tunnel --no-autoupdate run
-
-  enclosed:
-    restart: unless-stopped
-    image: ghcr.io/corentinth/enclosed:latest
-    networks:
-      - web_cloudflare
-    volumes:
-      - /evil_ripple/docker-volumes/enclosed:/app/.data
-    environment:
-      SERVER_API_ROUTES_TIMEOUT_MS: "30000"
-      PUBLIC_DEFAULT_DELETE_NOTE_AFTER_READING: "true"
-      PUBLIC_IS_SETTING_NO_EXPIRATION_ALLOWED: "false"
-      SERVER_CORS_ORIGINS: "https://enclosed.djones.co"
-    env_file: enclosed.env
-
-  linkding:
-    image: sissbruecker/linkding:latest
-    restart: unless-stopped
-    networks:
-      - web_cloudflare
-    volumes:
-      - "/evil_ripple/docker-volumes/linkding:/etc/linkding/data"
-    env_file: linkding.env
-
-  gollum:
-    restart: unless-stopped
-    image: gollumwiki/gollum:6.1.0
-    networks:
-      - web_cloudflare
-    user: "1000:1000"
-    volumes:
-      - /evil_ripple/docker-volumes/txfwiki.git:/data.git
-    command: --h1-title --allow-uploads dir --emoji --bare /data.git
-
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:v0.8.10
-    restart: unless-stopped
-    networks:
-      - web_cloudflare
-    environment:
-      WEBUI_URL: "https://ai.djones.co"
-      WEBUI_AUTH_TRUSTED_EMAIL_HEADER: "Cf-Access-Authenticated-User-Email"
-      BYPASS_MODEL_ACCESS_CONTROL: "True"
-      OLLAMA_BASE_URL: "http://192.168.10.4:11434"
-    env_file: open-webui.env
-    volumes:
-      - type: bind
-        source: /evil_ripple/docker-volumes/open-webui
-        target: /app/backend/data
-
-  rc-club-members:
-    restart: unless-stopped
-    image: public.ecr.aws/m3l3l1j4/rc-club-members-2@sha256:b889552f089e19bd6e073bea35afa741b5a1eaaf411ffdb046683a961db14c54
-    networks:
-      - web_cloudflare
-    environment:
-      APP_DEBUG: "false"
-      APP_TIME_ZONE: "America/New_York"
-      APP_ORIGIN: "https://members.bsrcc.com"
-      APP_NAME: "Black Sheep RC Club"
-      APP_SHORT_NAME: "BSRCC"
-      MAILGUN_DOMAIN: "bsrcc.com"
-      MAILGUN_URL: "https://api.mailgun.net/v3/bsrcc.com/messages"
-      NOREPLY_EMAIL: "noreply@bsrcc.com"
-      DEFAULT_FROM_EMAIL_USER: "daniel"
-      ALLOWED_HOSTS: '["members.bsrcc.com"]'
-      CSRF_TRUSTED_ORIGINS: '["https://members.bsrcc.com"]'
-      DATABASE_PATH: "/data/db.sqlite3"
-    env_file: rc-club-members.env
-    volumes:
-      - /evil_ripple/docker-volumes/rc-club-members:/data
-
-  flask-password:
-    restart: unless-stopped
-    image: public.ecr.aws/m3l3l1j4/flask-password@sha256:1e368171ebcb2af2019a4189a26d964111689179b9b36a2e89266ae730001369
-    networks:
-      - web_cloudflare
-      - postgres
-    environment:
-      FLASK_DEBUG: "false"
-      PG_HOST: "postgres"
-    env_file: flask-password.env
-
-  flask-imghost:
-    restart: unless-stopped
-    image: public.ecr.aws/m3l3l1j4/flask-imghost@sha256:9887fe0798085e4e92f23093524ac4ddd34ee3011047ecd093f1abbad31de4e5
-    networks:
-      - web_cloudflare
-      - postgres
-    environment:
-      FLASK_DEBUG: "false"
-      S3_BUCKET: "djones-imghost"
-      BUCKET_CDN: '{"djones-imghost": "https://imghost-cdn.djones.co"}'
-      PG_HOST: "postgres"
-    env_file: flask-imghost.env
-
-  it-tools:
-    restart: unless-stopped
-    image: ghcr.io/corentinth/it-tools:latest
-    networks:
-      - web_cloudflare
-
   caddy:
     build:
       dockerfile: ./caddy.Dockerfile
@@ -209,46 +100,6 @@ services:
     network_mode: host
     volumes:
       - /evil_ripple/docker-volumes/unifi:/unifi
-
-  matrix-portal-server:
-    build: "https://github.com/tortxof/matrix-portal-server.git#main"
-    networks:
-      - web_cloudflare
-    restart: unless-stopped
-    ports:
-      - "5000:5000"
-
-  gotime:
-    build: "https://github.com/tortxof/gotime.git#main"
-    restart: unless-stopped
-    networks:
-      - web_cloudflare
-
-  www-time:
-    build: "https://github.com/tortxof/www-time.git#main"
-    networks:
-      - web_cloudflare
-    restart: unless-stopped
-
-  scrutiny:
-    restart: unless-stopped
-    image: ghcr.io/analogj/scrutiny:master-omnibus
-    networks:
-      - web_cloudflare
-    cap_add:
-      - SYS_RAWIO
-    env_file: scrutiny.env
-    volumes:
-      - /run/udev:/run/udev:ro
-      - /evil_ripple/docker-volumes/scrutiny/config:/opt/scrutiny/config
-      - /evil_ripple/docker-volumes/scrutiny/influxdb:/opt/scrutiny/influxdb
-    devices:
-      - "/dev/sda"
-      - "/dev/sdg"
-      - "/dev/sdh"
-      - "/dev/sdi"
-      - "/dev/sdj"
-      - "/dev/sdk"
 
   # rustdesk
   hbbs:
