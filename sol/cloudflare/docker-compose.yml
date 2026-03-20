@@ -147,9 +147,9 @@ services:
       - /evil_ripple/docker-volumes/scrutiny/config:/opt/scrutiny/config
       - /evil_ripple/docker-volumes/scrutiny/influxdb:/opt/scrutiny/influxdb
     devices:
+      - "/dev/nvme0n1"
       - "/dev/sda"
       - "/dev/sdb"
       - "/dev/sdc"
       - "/dev/sdd"
       - "/dev/sde"
-      - "/dev/sdf"
