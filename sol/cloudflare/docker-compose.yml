@@ -13,6 +13,34 @@ services:
     env_file: cloudflared.env
     command: tunnel --no-autoupdate run
 
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:14
+    restart: unless-stopped
+    networks:
+      - web
+    env_file: forgejo.env
+    environment:
+      USER_UID: "1000"
+      USER_GID: "1000"
+      FORGEJO__server__ROOT_URL: "https://forgejo.djones.co/"
+      FORGEJO__server__START_SSH_SERVER: "false"
+      FORGEJO__server__SSH_DOMAIN: "git.djones.co"
+      FORGEJO__server__SSH_PORT: "222"
+      FORGEJO__server__SSH_LISTEN_PORT: "22"
+      FORGEJO__openid__ENABLE_OPENID_SIGNIN: "false"
+      FORGEJO__openid__ENABLE_OPENID_SIGNUP: "false"
+      FORGEJO__ssh.minimum_key_sizes__RSA: "2048"
+      FORGEJO__mailer__ENABLED: "true"
+      FORGEJO__mailer__SMTP_ADDR: "smtp.mailgun.org"
+      FORGEJO__mailer__SMTP_PORT: "587"
+      FORGEJO__mailer__USER: "forgejo@djones.co"
+    volumes:
+      - /evil_ripple/docker-volumes/forgejo:/data
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "222:22"
+
   enclosed:
     restart: unless-stopped
     image: ghcr.io/corentinth/enclosed:latest
