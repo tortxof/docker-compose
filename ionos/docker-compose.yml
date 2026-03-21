@@ -42,5 +42,11 @@ services:
     network_mode: host
     command: "TCP4-LISTEN:37888,fork,reuseaddr,keepalive TCP:100.114.219.71:37888"
 
+  forgejo-ssh-proxy:
+    image: alpine/socat
+    restart: unless-stopped
+    network_mode: host
+    command: "TCP4-LISTEN:222,fork,reuseaddr,keepalive TCP:100.72.236.107:222"
+
 volumes:
   tailscale:
