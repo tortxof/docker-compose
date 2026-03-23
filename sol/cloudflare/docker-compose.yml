@@ -4,6 +4,9 @@ networks:
     external: true
     name: postgres
 
+volumes:
+  docker_certs:
+
 services:
   cloudflared:
     restart: unless-stopped
@@ -42,10 +45,14 @@ services:
       - "222:22"
 
   runner-dind:
-    image: docker:dind
-    privileged: "true"
-    command: ["dockerd", "-H", "tcp://0.0.0.0:2375", "--tls=false"]
-    restart: "unless-stopped"
+    image: data.forgejo.org/oci/docker:dind
+    hostname: docker
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+      DOCKER_HOST: runner-dind
+    volumes:
+      - docker_certs:/certs
 
   runner:
     image: "data.forgejo.org/forgejo/runner:12"
@@ -55,10 +62,13 @@ services:
       runner-dind:
         condition: service_started
     environment:
-      DOCKER_HOST: tcp://runner-dind:2375
+      DOCKER_HOST: tcp://docker:2376
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_TLS_VERIFY: "1"
     user: 1002:1002
     volumes:
       - /evil_ripple/docker-volumes/forgejo-runner:/data
+      - docker_certs:/certs
     restart: "unless-stopped"
     command: '/bin/sh -c "sleep 5; forgejo-runner daemon --config config.yml"'
 
