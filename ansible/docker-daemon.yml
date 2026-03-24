@@ -1,0 +1,21 @@
+---
+- name: Configure Docker daemon
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure /etc/docker directory exists
+      ansible.builtin.file:
+        path: /etc/docker
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Set Docker daemon configuration
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          {"log-driver": "local"}
+        owner: root
+        group: root
+        mode: "0644"

@@ -1,0 +1,21 @@
+---
+- name: Configure sshd for Docker connection reliability
+  hosts: node1
+  become: true
+  tasks:
+    - name: Copy 99-docker-ssh.conf to sshd_config.d
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/99-docker-ssh.conf
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          MaxStartups 100
+          MaxSessions 100
+      notify: Restart ssh
+
+  handlers:
+    - name: Restart ssh
+      ansible.builtin.systemd_service:
+        name: ssh.service
+        state: restarted

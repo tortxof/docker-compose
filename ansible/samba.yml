@@ -1,0 +1,24 @@
+---
+- name: Configure Samba shares
+  hosts: node1
+  become: true
+  tasks:
+    - name: Ensure Samba share definitions are in smb.conf
+      ansible.builtin.blockinfile:
+        path: /etc/samba/smb.conf
+        block: |
+          [sol]
+          path = /evil_ripple
+          browseable = yes
+          read only = yes
+          guest ok = no
+          [tortxof]
+          path = /evil_ripple/tortxof
+          browseable = yes
+          read only = no
+          guest ok = no
+          [beth]
+          path = /evil_ripple/beth
+          browseable = yes
+          read only = no
+          guest ok = no
