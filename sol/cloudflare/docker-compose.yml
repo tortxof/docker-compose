@@ -1,5 +1,8 @@
 networks:
   web:
+  valkey:
+    external: true
+    name: valkey
   postgres:
     external: true
     name: postgres
@@ -15,6 +18,19 @@ services:
       - web
     env_file: cloudflared.env
     command: tunnel --no-autoupdate run
+
+  searxng:
+    image: ghcr.io/searxng/searxng:2026.3.25-fe1d6d9c4
+    restart: unless-stopped
+    networks:
+      - web
+      - valkey
+    environment:
+      SEARXNG_BASE_URL: "https://search.djones.co/"
+      SEARXNG_VALKEY_URL: "valkey://valkey:6379/1"
+    volumes:
+      - /evil_ripple/docker-volumes/searxng/config:/etc/searxng
+      - /evil_ripple/docker-volumes/searxng/cache:/var/cache/searxng
 
   forgejo:
     image: codeberg.org/forgejo/forgejo:14
