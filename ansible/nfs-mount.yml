@@ -1,0 +1,12 @@
+---
+- name: Configure NFS mount in fstab
+  hosts: workstations
+  become: true
+  tasks:
+    - name: Ensure NFS mount entry in fstab
+      ansible.builtin.mount:
+        path: /evil_ripple
+        src: 192.168.1.1:/evil_ripple
+        fstype: nfs
+        opts: rw,hard,intr,noauto
+        state: present
