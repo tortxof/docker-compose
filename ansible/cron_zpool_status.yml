@@ -1,0 +1,14 @@
+---
+- name: set cron jobs on node1
+  hosts: node1
+  become: false
+  tasks:
+    - name: Ensure zpool status cron
+      ansible.builtin.cron:
+        name: "zpool status n8n"
+        job: "sudo zpool status | base64 | curl -X POST -d @- https://n8n.local.djones.co/webhook/880a1ef5-4afc-42c2-aead-63a7dffe7b8e"
+        minute: "*/10"
+        hour: "*"
+        day: "*"
+        month: "*"
+        weekday: "*"
