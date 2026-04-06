@@ -83,6 +83,30 @@ services:
     volumes:
       - /evil_ripple/docker-volumes/unifi:/unifi
 
+  homeassistant:
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    restart: unless-stopped
+    volumes:
+      - /evil_ripple/docker-volumes/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    privileged: true
+    network_mode: host
+    environment:
+      TZ: America/New_York
+
+  matter-server:
+    image: ghcr.io/matter-js/python-matter-server:stable
+    restart: unless-stopped
+    network_mode: host
+    security_opt:
+      # Needed for Bluetooth via dbus
+      - apparmor:unconfined
+    volumes:
+      - /evil_ripple/docker-volumes/matter-server/data:/data
+      # Required for Bluetooth via D-Bus
+      - /run/dbus:/run/dbus:ro
+
   # rustdesk
   hbbs:
     restart: unless-stopped
