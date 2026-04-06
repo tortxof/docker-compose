@@ -27,3 +27,8 @@ n8n.local.djones.co {
     reverse_proxy n8n:5678
     import cloudflare_tls
 }
+
+ha.local.djones.co {
+    reverse_proxy 192.168.1.1:8123
+    import cloudflare_tls
+}
