@@ -19,6 +19,15 @@ services:
     env_file: cloudflared.env
     command: tunnel --no-autoupdate run
 
+  ha-proxy:
+    image: alpine/socat
+    restart: unless-stopped
+    networks:
+      - web
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: "TCP4-LISTEN:8080,fork,reuseaddr,keepalive TCP:host.docker.internal:8123"
+
   searxng:
     image: ghcr.io/searxng/searxng:2026.3.25-fe1d6d9c4
     restart: unless-stopped
