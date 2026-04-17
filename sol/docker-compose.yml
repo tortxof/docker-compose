@@ -115,7 +115,7 @@ services:
     network_mode: "host"
     command: hbbs
     volumes:
-      - /evil_ripple/rustdesk:/root
+      - /evil_engine/docker-volumes/rustdesk:/root
 
     depends_on:
       - hbbr
@@ -127,7 +127,7 @@ services:
     network_mode: "host"
     command: hbbr
     volumes:
-      - /evil_ripple/rustdesk:/root
+      - /evil_engine/docker-volumes/rustdesk:/root
 
   mumble-server:
     image: mumblevoip/mumble-server:latest
