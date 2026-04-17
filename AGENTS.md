@@ -73,19 +73,19 @@ ansible-playbook --check playbook.yml  # Ansible dry-run
 - Prefer official images from Docker Hub, GitHub Container Registry, or trusted sources
 
 **Volume Bind Mounts:**
-- Sol host: `/evil_ripple/docker-volumes/{service_name}`
+- Sol host: `/evil_engine/docker-volumes/{service_name}`
 - Neptune host: `/stable_grace/docker-volumes/{service_name}`
 - Use long syntax for clarity when needed:
   ```yaml
   volumes:
     - type: bind
-      source: /evil_ripple/docker-volumes/caddy/data
+      source: /evil_engine/docker-volumes/caddy/data
       target: /data
   ```
 - Short syntax acceptable for simple mounts:
   ```yaml
   volumes:
-    - /evil_ripple/docker-volumes/n8n:/home/node/.n8n
+    - /evil_engine/docker-volumes/n8n:/home/node/.n8n
   ```
 
 **Networks:**

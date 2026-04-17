@@ -38,8 +38,8 @@ services:
       SEARXNG_BASE_URL: "https://search.djones.co/"
       SEARXNG_VALKEY_URL: "valkey://valkey:6379/1"
     volumes:
-      - /evil_ripple/docker-volumes/searxng/config:/etc/searxng
-      - /evil_ripple/docker-volumes/searxng/cache:/var/cache/searxng
+      - /evil_engine/docker-volumes/searxng/config:/etc/searxng
+      - /evil_engine/docker-volumes/searxng/cache:/var/cache/searxng
 
   forgejo:
     image: codeberg.org/forgejo/forgejo:14
@@ -63,7 +63,7 @@ services:
       FORGEJO__mailer__SMTP_PORT: "587"
       FORGEJO__mailer__USER: "forgejo@djones.co"
     volumes:
-      - /evil_ripple/docker-volumes/forgejo:/data
+      - /evil_engine/docker-volumes/forgejo:/data
       - /etc/localtime:/etc/localtime:ro
     ports:
       - "3000:3000"
@@ -92,7 +92,7 @@ services:
       DOCKER_TLS_VERIFY: "1"
     user: 1002:1002
     volumes:
-      - /evil_ripple/docker-volumes/forgejo-runner:/data
+      - /evil_engine/docker-volumes/forgejo-runner:/data
       - docker_certs:/certs
     restart: "unless-stopped"
     command: '/bin/sh -c "sleep 5; forgejo-runner daemon --config config.yml"'
@@ -103,7 +103,7 @@ services:
     networks:
       - web
     volumes:
-      - /evil_ripple/docker-volumes/enclosed:/app/.data
+      - /evil_engine/docker-volumes/enclosed:/app/.data
     environment:
       SERVER_API_ROUTES_TIMEOUT_MS: "30000"
       PUBLIC_DEFAULT_DELETE_NOTE_AFTER_READING: "true"
@@ -117,7 +117,7 @@ services:
     networks:
       - web
     volumes:
-      - "/evil_ripple/docker-volumes/linkding:/etc/linkding/data"
+      - "/evil_engine/docker-volumes/linkding:/etc/linkding/data"
     env_file: linkding.env
 
   gollum:
@@ -127,7 +127,7 @@ services:
       - web
     user: "1000:1000"
     volumes:
-      - /evil_ripple/docker-volumes/txfwiki.git:/data.git
+      - /evil_engine/docker-volumes/txfwiki.git:/data.git
     command: --h1-title --allow-uploads dir --emoji --bare /data.git
 
   open-webui:
@@ -143,7 +143,7 @@ services:
     env_file: open-webui.env
     volumes:
       - type: bind
-        source: /evil_ripple/docker-volumes/open-webui
+        source: /evil_engine/docker-volumes/open-webui
         target: /app/backend/data
 
   rc-club-members:
@@ -166,7 +166,7 @@ services:
       DATABASE_PATH: "/data/db.sqlite3"
     env_file: rc-club-members.env
     volumes:
-      - /evil_ripple/docker-volumes/rc-club-members:/data
+      - /evil_engine/docker-volumes/rc-club-members:/data
 
   flask-password:
     restart: unless-stopped
@@ -228,8 +228,8 @@ services:
     env_file: scrutiny.env
     volumes:
       - /run/udev:/run/udev:ro
-      - /evil_ripple/docker-volumes/scrutiny/config:/opt/scrutiny/config
-      - /evil_ripple/docker-volumes/scrutiny/influxdb:/opt/scrutiny/influxdb
+      - /evil_engine/docker-volumes/scrutiny/config:/opt/scrutiny/config
+      - /evil_engine/docker-volumes/scrutiny/influxdb:/opt/scrutiny/influxdb
     devices:
       - "/dev/nvme0n1"
       - "/dev/sda"

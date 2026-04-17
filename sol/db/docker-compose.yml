@@ -11,7 +11,7 @@ services:
     networks:
       - valkey
     volumes:
-      - /evil_ripple/docker-volumes/valkey:/data
+      - /evil_engine/docker-volumes/valkey:/data
     command: valkey-server --save 60 1 --loglevel warning
 
   postgres:
@@ -20,5 +20,5 @@ services:
     networks:
       - postgres
     volumes:
-      - /evil_ripple/docker-volumes/postgres:/var/lib/postgresql/data
+      - /evil_engine/docker-volumes/postgres:/var/lib/postgresql/data
     env_file: postgres.env

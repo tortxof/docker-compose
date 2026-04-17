@@ -20,10 +20,10 @@ services:
     env_file: caddy.env
     volumes:
       - type: bind
-        source: /evil_ripple/docker-volumes/caddy/data
+        source: /evil_engine/docker-volumes/caddy/data
         target: /data
       - type: bind
-        source: /evil_ripple/docker-volumes/caddy/config
+        source: /evil_engine/docker-volumes/caddy/config
         target: /config
 
   n8n:
@@ -41,7 +41,7 @@ services:
       NODE_ENV: production
       GENERIC_TIMEZONE: "America/New_York"
     volumes:
-      - /evil_ripple/docker-volumes/n8n:/home/node/.n8n
+      - /evil_engine/docker-volumes/n8n:/home/node/.n8n
 
   jellyfin:
     image: ghcr.io/jellyfin/jellyfin:10.11.6
@@ -51,8 +51,8 @@ services:
     networks:
       - web
     volumes:
-      - /evil_ripple/docker-volumes/jellyfin/cache:/cache
-      - /evil_ripple/docker-volumes/jellyfin/config:/config
+      - /evil_engine/docker-volumes/jellyfin/cache:/cache
+      - /evil_engine/docker-volumes/jellyfin/config:/config
       - /evil_ripple/media/library/movies:/media/movies:ro
       - /evil_ripple/media/library/tv:/media/tv:ro
       - /evil_ripple/media/library/music:/media/music:ro
@@ -65,7 +65,7 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - /evil_ripple/docker-volumes/syncthing:/var/syncthing
+      - /evil_engine/docker-volumes/syncthing:/var/syncthing
       - /evil_ripple/media/library/music-opus:/media/library/music-opus:ro
     environment:
       - PUID=1000
@@ -81,13 +81,13 @@ services:
     restart: unless-stopped
     network_mode: host
     volumes:
-      - /evil_ripple/docker-volumes/unifi:/unifi
+      - /evil_engine/docker-volumes/unifi:/unifi
 
   homeassistant:
     image: "ghcr.io/home-assistant/home-assistant:stable"
     restart: unless-stopped
     volumes:
-      - /evil_ripple/docker-volumes/homeassistant/config:/config
+      - /evil_engine/docker-volumes/homeassistant/config:/config
       - /etc/localtime:/etc/localtime:ro
       - /run/dbus:/run/dbus:ro
     privileged: true
@@ -103,7 +103,7 @@ services:
       # Needed for Bluetooth via dbus
       - apparmor:unconfined
     volumes:
-      - /evil_ripple/docker-volumes/matter-server/data:/data
+      - /evil_engine/docker-volumes/matter-server/data:/data
       # Required for Bluetooth via D-Bus
       - /run/dbus:/run/dbus:ro
 
@@ -136,4 +136,4 @@ services:
       - "64738:64738/tcp"
       - "64738:64738/udp"
     volumes:
-      - /evil_ripple/docker-volumes/mumble-server:/data
+      - /evil_engine/docker-volumes/mumble-server:/data
