@@ -29,7 +29,7 @@ services:
     command: "TCP4-LISTEN:8080,fork,reuseaddr,keepalive TCP:host.docker.internal:8123"
 
   searxng:
-    image: ghcr.io/searxng/searxng:2026.3.25-fe1d6d9c4
+    image: ghcr.io/searxng/searxng:2026.4.17-e8299a4c3
     restart: unless-stopped
     networks:
       - web
