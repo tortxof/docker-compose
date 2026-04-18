@@ -42,7 +42,7 @@ services:
       - /evil_engine/docker-volumes/searxng/cache:/var/cache/searxng
 
   forgejo:
-    image: codeberg.org/forgejo/forgejo:14
+    image: codeberg.org/forgejo/forgejo:14.0.4
     restart: unless-stopped
     networks:
       - web
