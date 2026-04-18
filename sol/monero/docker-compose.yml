@@ -72,6 +72,7 @@ services:
     privileged: true
     volumes:
       - /dev/hugepages:/dev/hugepages:rw
+      - /lemon_vicious/p2pool:/home/p2pool/.p2pool
     command:
       - "--host"
       - "100.80.119.122"
