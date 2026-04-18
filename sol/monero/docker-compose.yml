@@ -10,15 +10,14 @@ services:
       TS_USERSPACE: "false"
       TS_EXTRA_ARGS: "--exit-node=100.77.21.77"
     volumes:
-      - ts-monerod:/var/lib/tailscale
+      - /evil_engine/docker-volumes/ts-monerod:/var/lib/tailscale
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
       - net_admin
 
   monerod:
-    image: monero:latest
-    pull_policy: never
+    image: forgejo.djones.co/tortxof/monero:latest
     container_name: monerod
     restart: unless-stopped
     stop_signal: SIGINT
@@ -26,7 +25,7 @@ services:
     user: "1000:1000"
     network_mode: service:ts-monerod
     volumes:
-      - /home/tortxof/.bitmonero:/home/monero/.bitmonero
+      - /lemon_vicious/bitmonero:/home/monero/.bitmonero
     command:
       - "--data-dir=/home/monero/.bitmonero"
       - "--non-interactive"
@@ -56,15 +55,14 @@ services:
       TS_USERSPACE: "false"
       TS_EXTRA_ARGS: "--exit-node=100.77.21.77"
     volumes:
-      - ts-p2pool:/var/lib/tailscale
+      - /evil_engine/docker-volumes/ts-p2pool:/var/lib/tailscale
     devices:
       - /dev/net/tun:/dev/net/tun
     cap_add:
       - net_admin
 
   p2pool:
-    image: p2pool:latest
-    pull_policy: never
+    image: forgejo.djones.co/tortxof/p2pool:latest
     container_name: p2pool
     restart: unless-stopped
     stop_signal: SIGINT
@@ -80,7 +78,3 @@ services:
       - "--wallet"
       - "48jVAh52AQ651TgHo9pQNHHMtmuHfbY3M9tp2t2NreSvDE3nTccYkJTigHPLeWxUCX8RhGjK3vQRe9PUSwbUVVod35S4ht6"
       - "--mini"
-
-volumes:
-  ts-monerod:
-  ts-p2pool:
