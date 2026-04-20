@@ -107,6 +107,26 @@ services:
       # Required for Bluetooth via D-Bus
       - /run/dbus:/run/dbus:ro
 
+  zigbee2mqtt:
+    image: ghcr.io/koenkk/zigbee2mqtt
+    restart: unless-stopped
+    networks:
+      - web
+    volumes:
+      - /evil_engine/docker-volumes/zigbee2mqtt:/app/data
+    environment:
+      - TZ=America/New_York
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    user: "1000:1000"
+    network_mode: host
+    volumes:
+      - /evil_engine/docker-volumes/mosquitto/config:/mosquitto/config
+      - /evil_engine/docker-volumes/mosquitto/data:/mosquitto/data
+      - /evil_engine/docker-volumes/mosquitto/log:/mosquitto/log
+
   # rustdesk
   hbbs:
     restart: unless-stopped
