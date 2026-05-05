@@ -86,6 +86,7 @@ services:
   homeassistant:
     image: "ghcr.io/home-assistant/home-assistant:stable"
     restart: unless-stopped
+    stop_grace_period: 60s
     volumes:
       - /evil_engine/docker-volumes/homeassistant/config:/config
       - /etc/localtime:/etc/localtime:ro
