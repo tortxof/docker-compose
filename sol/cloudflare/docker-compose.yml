@@ -131,7 +131,7 @@ services:
     command: --h1-title --allow-uploads dir --emoji --bare /data.git
 
   open-webui:
-    image: ghcr.io/open-webui/open-webui:v0.8.12
+    image: ghcr.io/open-webui/open-webui:v0.9.5
     restart: unless-stopped
     networks:
       - web
