@@ -44,7 +44,7 @@ services:
       - /evil_engine/docker-volumes/n8n:/home/node/.n8n
 
   jellyfin:
-    image: ghcr.io/jellyfin/jellyfin:10.11.6
+    image: ghcr.io/jellyfin/jellyfin:10.11.11
     restart: on-failure:1
     ports:
       - "8096:8096"
