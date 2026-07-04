@@ -29,7 +29,7 @@ services:
     command: "TCP4-LISTEN:8080,fork,reuseaddr,keepalive TCP:host.docker.internal:8123"
 
   searxng:
-    image: ghcr.io/searxng/searxng:2026.4.17-e8299a4c3
+    image: ghcr.io/searxng/searxng:2026.6.14-b3e08f2a4
     restart: unless-stopped
     networks:
       - web
@@ -42,7 +42,7 @@ services:
       - /evil_engine/docker-volumes/searxng/cache:/var/cache/searxng
 
   forgejo:
-    image: codeberg.org/forgejo/forgejo:15.0.1
+    image: codeberg.org/forgejo/forgejo:15.0.3
     restart: unless-stopped
     networks:
       - web
@@ -131,7 +131,7 @@ services:
     command: --h1-title --allow-uploads dir --emoji --bare /data.git
 
   open-webui:
-    image: ghcr.io/open-webui/open-webui:v0.9.5
+    image: ghcr.io/open-webui/open-webui:v0.9.6
     restart: unless-stopped
     networks:
       - web
