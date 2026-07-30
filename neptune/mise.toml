@@ -1,0 +1,4 @@
+[env]
+# When on neptune itself, DOCKER_HOST is empty so docker uses the local
+# socket (no SSH-to-localhost). From any other machine, SSH to neptune.
+DOCKER_HOST = "{% if exec(command='hostname') != 'neptune' %}ssh://neptune{% endif %}"
