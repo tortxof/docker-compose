@@ -28,19 +28,6 @@ services:
       - "host.docker.internal:host-gateway"
     command: "TCP4-LISTEN:8080,fork,reuseaddr,keepalive TCP:host.docker.internal:8123"
 
-  searxng:
-    image: ghcr.io/searxng/searxng:latest
-    restart: unless-stopped
-    networks:
-      - web
-      - valkey
-    environment:
-      SEARXNG_BASE_URL: "https://search.djones.co/"
-      SEARXNG_VALKEY_URL: "valkey://valkey:6379/1"
-    volumes:
-      - /evil_engine/docker-volumes/searxng/config:/etc/searxng
-      - /evil_engine/docker-volumes/searxng/cache:/var/cache/searxng
-
   forgejo:
     image: codeberg.org/forgejo/forgejo:16.0.3
     restart: unless-stopped
