@@ -117,6 +117,17 @@ services:
       - /evil_engine/docker-volumes/txfwiki.git:/data.git
     command: --h1-title --allow-uploads dir --emoji --bare /data.git
 
+  opds:
+    image: ghcr.io/dubyte/dir2opds:v1.11.0
+    restart: unless-stopped
+    networks:
+      - web
+    volumes:
+      - type: bind
+        source: "/evil_ripple/media/library/books/Calibre Library"
+        target: /books
+        read_only: true
+
   open-webui:
     image: ghcr.io/open-webui/open-webui:v0.11.3
     restart: unless-stopped
