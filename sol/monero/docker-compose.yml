@@ -17,7 +17,7 @@ services:
       - net_admin
 
   monerod:
-    image: forgejo.djones.co/tortxof/monero:latest
+    image: forgejo.djones.co/tortxof/monero:v0.18.5.1
     container_name: monerod
     restart: unless-stopped
     stop_signal: SIGINT
@@ -62,7 +62,7 @@ services:
       - net_admin
 
   p2pool:
-    image: forgejo.djones.co/tortxof/p2pool:latest
+    image: forgejo.djones.co/tortxof/p2pool:v4.18.1
     container_name: p2pool
     restart: unless-stopped
     stop_signal: SIGINT
