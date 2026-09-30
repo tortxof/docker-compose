@@ -29,7 +29,7 @@ services:
     command: "TCP4-LISTEN:8080,fork,reuseaddr,keepalive TCP:host.docker.internal:8123"
 
   forgejo:
-    image: codeberg.org/forgejo/forgejo:16.0.3
+    image: codeberg.org/forgejo/forgejo:16.0.5
     restart: unless-stopped
     networks:
       - web
