@@ -37,3 +37,8 @@ z2m.local.djones.co {
     reverse_proxy zigbee2mqtt:8080
     import cloudflare_tls
 }
+
+meshtastic-01fc.local.djones.co {
+    reverse_proxy 192.168.0.19:80
+    import cloudflare_tls
+}
