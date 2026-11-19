@@ -1,0 +1,25 @@
+---
+- name: Allow only public key authentication for SSH
+  hosts: all
+  become: true
+  tasks:
+    - name: Configure public key only authentication
+      ansible.builtin.blockinfile:
+        path: /etc/ssh/sshd_config
+        marker: "# {mark} ANSIBLE MANAGED PUBLIC KEY AUTHENTICATION"
+        # OpenSSH uses the first value found, before any included configuration.
+        insertbefore: BOF
+        block: |
+          AuthenticationMethods publickey
+          PubkeyAuthentication yes
+          PasswordAuthentication no
+          KbdInteractiveAuthentication no
+          ChallengeResponseAuthentication no
+        validate: /usr/sbin/sshd -t -f %s
+      notify: Reload ssh
+
+  handlers:
+    - name: Reload ssh
+      ansible.builtin.systemd_service:
+        name: ssh.service
+        state: reloaded

@@ -84,8 +84,19 @@ for details.
 | `cron_zpool_status.yml` | `node1` | Configures the ZFS status cron job. |
 | `samba.yml` | `node1` | Configures Samba shares. |
 | `sshd-docker.yml` | `node1` | Configures SSH connection limits and restarts SSH when changed. |
+| `sshd-public-key.yml` | `all` | Allows only public key SSH authentication; validates the configuration and reloads SSH when changed. |
 | `timesyncd.yml` | `node1` | Stops and disables systemd-timesyncd. |
 
-Only `nfs-mount.yml` and `docker-daemon.yml` currently apply to workstations.
+Before applying `sshd-public-key.yml`, verify that public key login works for
+an administrative account. The playbook does not install authorized keys. Keep
+an existing SSH session open while testing a new login. It sets the global
+authentication policy; review any existing `Match` blocks for per-user or
+per-connection overrides. To apply it to one host:
+
+```bash
+ansible-playbook sshd-public-key.yml --limit node1 --ask-become-pass
+```
+
+`nfs-mount.yml`, `docker-daemon.yml`, and `sshd-public-key.yml` apply to workstations.
 Limiting a `node1`-only playbook to a workstation will select no hosts; a local
 connection does not override a playbook's inventory target.
